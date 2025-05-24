@@ -4,7 +4,7 @@ go 1.24.2
 
 // workaround mssql-docker default TLS cert negative serial number problem
 // https://github.com/microsoft/mssql-docker/issues/895
-godebug x509negativeserial=1
+
 
 require (
 	cloud.google.com/go/bigquery v1.66.2
