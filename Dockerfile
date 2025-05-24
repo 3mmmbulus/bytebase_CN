@@ -1,21 +1,20 @@
 # syntax=docker/dockerfile:1
 
-# 构建阶段
+# -------- Build Stage --------
 FROM golang:1.24.2 AS builder
 
 WORKDIR /app
 
 COPY . .
 
-# 如果用 go:embed，要设置 GOEXPERIMENT
+# 避免因 mssql TLS 证书负序列号构建失败
 ENV CGO_ENABLED=0 \
-    GOEXPERIMENT=wasm \
     GODEBUG=x509negativeserial=1
 
 RUN go mod tidy
 RUN go build -o bytebase ./...
 
-# 最小运行镜像阶段
+# -------- Run Stage --------
 FROM debian:bullseye-slim
 
 WORKDIR /app
