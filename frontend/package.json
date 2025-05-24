@@ -52,7 +52,7 @@
     "match-sorter": "6.3.4",
     "monaco-editor": "npm:@codingame/monaco-vscode-editor-api@15.0.2",
     "monaco-languageclient": "9.5.0",
-    "naive-ui": "2.40.1",
+    "naive-ui": "2.41.0",
     "nice-grpc-common": "^2.0.2",
     "nice-grpc-error-details": "^0.2.8",
     "nice-grpc-web": "^3.3.6",
