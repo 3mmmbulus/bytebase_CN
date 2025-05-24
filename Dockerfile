@@ -12,7 +12,7 @@ ENV CGO_ENABLED=0 \
     GODEBUG=x509negativeserial=1
 
 RUN go mod tidy
-RUN go build -o bytebase ./...
+RUN go build -o bytebase ./main.go
 
 # -------- Run Stage --------
 FROM debian:bullseye-slim
