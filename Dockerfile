@@ -1,22 +1,32 @@
-# 使用 Go 官方镜像构建应用
-FROM golang:1.24.2 AS builder
+# 使用 Go 官方镜像作为构建阶段
+FROM golang:1.21 AS builder
 
 WORKDIR /app
+
+# 拷贝 go mod 和 sum 文件
+COPY go.mod go.sum ./
+
+# 下载依赖
+RUN go mod download
+
+# 拷贝所有源代码
 COPY . .
 
-ENV CGO_ENABLED=0 \
-    GODEBUG=x509negativeserial=1
+# 设置构建环境变量
+ENV CGO_ENABLED=0
+ENV GODEBUG=x509negativeserial=1
 
-RUN go mod tidy
+# 构建 bytebase 可执行文件
+RUN go build -o /bytebase ./backend/bin/server/main.go
 
-# 关键行：编译 backend/bin/server/main.go 为可执行文件 bytebase
-RUN go build -o bytebase ./backend/bin/server/main.go
+# 使用 distroless 镜像作为运行环境
+FROM gcr.io/distroless/static
 
-# 使用瘦身后的镜像部署
-FROM debian:bullseye-slim
+# 拷贝编译好的二进制文件
+COPY --from=builder /bytebase /bytebase
 
-WORKDIR /app
-COPY --from=builder /app/bytebase /app/bytebase
-
+# 暴露默认端口
 EXPOSE 8080
-ENTRYPOINT ["/app/bytebase"]
+
+# 启动命令
+ENTRYPOINT ["/bytebase"]
